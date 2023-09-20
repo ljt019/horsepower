@@ -1,6 +1,6 @@
 # app.py
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from flask_cors import CORS
 import RPi.GPIO as GPIO
 import time
@@ -28,6 +28,10 @@ def get_rpm():
     rpm = (pulse_count / 7) * 60  # Calculate RPM
     return rpm
 
+@app.route("/")
+def index():
+    return render_template("index.html")
+
 @app.route("/get_horsepower", methods=["GET"])
 def get_horsepower():
     total_rpm = 0
@@ -44,6 +48,6 @@ def get_horsepower():
 
 if __name__ == "__main__":
     try:
-        app.run(debug=True, port=5000)
+        app.run(debug=True, port=5000, host="0.0.0.0")
     finally:
         GPIO.cleanup()  # Clean up GPIO on exit

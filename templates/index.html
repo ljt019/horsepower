@@ -1,0 +1,21 @@
+<!-- This code creates a display of the current number of horsepower the user has, and a running horse gif. 
+    The horse gif increases in speed as the user accumulates more horsepower. 
+    The horse gif is initially invisible, but becomes visible when the user clicks on the screen. -->
+
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horsepower Exhibit</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="horsepowerDisplay">Horsepower: <span id="horsepowerValue">0</span></div>
+    <div class="background"></div>
+    <div id="horseAnimation"></div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
