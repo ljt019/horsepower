@@ -8,7 +8,12 @@ CORS(app)
 
 @app.route("/get_horsepower", methods=["GET"])
 def get_horsepower():
-    horsepower = 1
+    
+    horsepower = 1.12
+    
+    if horsepower > 1.12:
+        horsepower = 1.12
+    
     return jsonify({"horsepower": horsepower})
 
 if __name__ == "__main__":
