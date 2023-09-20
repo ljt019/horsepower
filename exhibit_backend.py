@@ -10,7 +10,7 @@ CORS(app)
 
 GPIO_PIN = 14
 DEBOUNCE_TIME = 10  # in milliseconds, adjust as needed
-NUM_READINGS = 5  # Number of readings to take before averaging
+NUM_READINGS = 2  # Number of readings to take before averaging
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(GPIO_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -41,9 +41,10 @@ def get_horsepower():
         time.sleep(0.1)  # Sleep a bit between readings
 
     avg_rpm = total_rpm / NUM_READINGS
-    torque = 16  # fixed at 16 foot-pounds
+    torque = 14  # fixed at 16 foot-pounds
     horsepower = (torque * avg_rpm) / 5252
 
+    horsepower = round(horsepower, 2)
     return jsonify({"horsepower": horsepower})
 
 if __name__ == "__main__":

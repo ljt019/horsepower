@@ -61,7 +61,7 @@ function updateHorseSpriteInterval(horsepower) {
         clearInterval(horseAnimationInterval);
     }
 
-    const baseInterval = 200;
+    const baseInterval = 1000;
     const easedHorsepower = easeOutCubic(horsepower / maxHorsepower);
     const newInterval = baseInterval / easedHorsepower;
 
@@ -83,4 +83,4 @@ setInterval(() => {
         .catch(error => {
             console.error("Error fetching or processing horsepower:", error);
         });
-}, 1000);
+}, 750);
