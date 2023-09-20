@@ -9,8 +9,8 @@ app = Flask(__name__)
 CORS(app)
 
 GPIO_PIN = 14
-DEBOUNCE_TIME = 100  # in milliseconds, adjust as needed
-NUM_READINGS = 10  # Number of readings to take before averaging
+DEBOUNCE_TIME = 10  # in milliseconds, adjust as needed
+NUM_READINGS = 2  # Number of readings to take before averaging
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(GPIO_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -41,7 +41,7 @@ def get_horsepower():
         time.sleep(0.1)  # Sleep a bit between readings
 
     avg_rpm = total_rpm / NUM_READINGS
-    torque = 15  # fixed at 15 foot-pounds
+    torque = 16  # fixed at 16 foot-pounds
     horsepower = (torque * avg_rpm) / 5252
 
     return jsonify({"horsepower": horsepower})
