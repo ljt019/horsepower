@@ -10,7 +10,7 @@ CORS(app)
 
 GPIO_PIN = 14
 DEBOUNCE_TIME = 10  # in milliseconds, adjust as needed
-NUM_READINGS = 2  # Number of readings to take before averaging
+NUM_READINGS = 5  # Number of readings to take before averaging
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(GPIO_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)

@@ -9,7 +9,7 @@ CORS(app)
 @app.route("/get_horsepower", methods=["GET"])
 def get_horsepower():
     
-    horsepower = 1.12
+    horsepower = .6
     
     if horsepower > 1.12:
         horsepower = 1.12

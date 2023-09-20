@@ -61,7 +61,7 @@ function updateHorseSpriteInterval(horsepower) {
         clearInterval(horseAnimationInterval);
     }
 
-    const baseInterval = 1000;
+    const baseInterval = 200;
     const easedHorsepower = easeOutCubic(horsepower / maxHorsepower);
     const newInterval = baseInterval / easedHorsepower;
 
