@@ -1,5 +1,3 @@
-/* styles.css */
-
 body, html {
     margin: 0;
     padding: 0;
@@ -11,35 +9,31 @@ body, html {
     position: absolute;
     top: 0;
     left: 0;
-    width: 200%; /* Ensure it's wider for scrolling effect */
+    width: 100%;
     height: 100%;
     background: url('static/images/background.jpg') repeat-x;
-    animation: scrollBackground 20s linear infinite; /* Initially set to a slow speed */
 }
 
-#horseGif {
+#horseAnimation {
     position: absolute;
-    bottom: 10%;
+    bottom: 10%; /* Adjust as needed */
     left: 50%;
-    transform: translateX(-50%);
-    /* Adjust size as needed */
-    width: 20%;
-    height: auto;
+    transform: translateX(-25%), scale(0.2);
+    width: 900px;  /* This matches the frame width */
+    height: 606px; /* This matches the frame height */
+    overflow: hidden; /* This will ensure only one frame is visible */
+    background: url('static/images/horse_sprite.png') 0 0;
+    background-size: 4500px 1212px; /* Adjusted for 2 rows and 6 frames */
 }
 
 #horsepowerDisplay {
     position: absolute;
-    top: 10%;  /* Adjust to move it up or down */
+    top: 10%; 
     left: 50%;
     transform: translateX(-50%);
-    font-size: 1.5em;  /* Adjust for desired font size */
-    background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent background for better visibility */
+    font-size: 1.5em;
+    background-color: rgba(255, 255, 255, 0.7);
     padding: 10px;
     border-radius: 5px;
-    z-index: 10;  /* Ensures it appears on top of other elements */
-}
-
-@keyframes scrollBackground {
-    0% { background-position: 0 0; }
-    100% { background-position: -50% 0; }
+    z-index: 10;
 }

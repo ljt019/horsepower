@@ -1,47 +1,56 @@
-function updateAnimationSpeed(horsepower) {
-    // Adjust the animation duration based on horsepower
-    const baseSpeed = 20; // This can be adjusted
-    const newDuration = baseSpeed / horsepower + "s";
-    
-    const background = document.querySelector(".background");
-    background.style.animationDuration = newDuration;
+let backgroundPositionX = 0;
+let currentSpeed = 0;
+const maxHorsepower = 1.12;
+let animationRunning = false;
+let currentFrame = 0;
+const frameWidth = 900;  // Replace with your frame width
+
+function animateBackground() {
+    if (!animationRunning) {
+        return;  // Stops the loop
+    }
+    backgroundPositionX -= currentSpeed;
+    const canvas = document.querySelector(".background");
+    canvas.style.backgroundPosition = backgroundPositionX + "px 0";
+    requestAnimationFrame(animateBackground);
+}
+
+function adjustBackgroundSpeed(horsepower) {
+    const speedFactor = 5;
+    currentSpeed = speedFactor * (horsepower / maxHorsepower);
+    if (horsepower > 0) {
+        animationRunning = true;
+    } else {
+        currentSpeed = 0;
+        animationRunning = false;
+    }
+}
+
+function updateHorseSprite() {
+    let columns = 5; // Number of columns in the spritesheet
+    let yOffset = Math.floor(currentFrame / columns) * 606; 
+    let xOffset = (currentFrame % columns) * frameWidth;
+
+    document.getElementById('horseAnimation').style.backgroundPosition = `-${xOffset}px -${yOffset}px`;
+    currentFrame = (currentFrame + 1) % 6; 
 }
 
 // Periodically fetch horsepower value
 setInterval(() => {
     fetch('http://localhost:5000/get_horsepower')
-        .then(response => {
-            // Log the raw response for debugging
-            return response.text().then(text => {
-                console.log("Raw response:", text);  // Log raw response
-                return JSON.parse(text);  // Try parsing
-            });
-        })
+        .then(response => response.json())
         .then(data => {
-            // Logging the parsed data for further verification
-            console.log("Parsed data:", data);
-            console.log("Fetched data:", data);
-
             const horsepower = data.horsepower;
+            adjustBackgroundSpeed(horsepower);
 
             // Display the horsepower value
             const horsepowerElem = document.getElementById('horsepowerValue');
             horsepowerElem.innerText = horsepower;
-
-            updateAnimationSpeed(horsepower);
             
-            // If horsepower is 0, pause the gif and background
-            if (horsepower === 0) {
-                document.getElementById("horseGif").style.animationPlayState = "paused";
-                document.querySelector(".background").style.animationPlayState = "paused";
-            } else {
-                document.getElementById("horseGif").style.animationPlayState = "running";
-                document.querySelector(".background").style.animationPlayState = "running";
-            }
+            // Update horse sprite
+            updateHorseSprite();
         })
         .catch(error => {
             console.error("Error fetching or processing horsepower:", error);
         });
-}, 1000); // Check every second. Adjust as needed.
-
-
+}, 1000);  // Check every second. Adjust as needed.
