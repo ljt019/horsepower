@@ -9,7 +9,7 @@ app = Flask(__name__)
 CORS(app)
 
 GPIO_PIN = 14
-DEBOUNCE_TIME = 10  # in milliseconds, adjust as needed
+DEBOUNCE_TIME = 50  # in milliseconds, adjust as needed
 NUM_READINGS = 2  # Number of readings to take before averaging
 last_pulse_time = 0  # To counter continueous triggers (sensor stopped over magnet)
 
@@ -28,6 +28,7 @@ def get_rpm():
 
         if GPIO.input(GPIO_PIN) == 0:  # Detecting a falling edge (magnet passing by)
             # Check if the time between two consecutive pulses is greater than debounce time
+            print(f"Pulse detected. Time since last: {current_time - last_detected_time}")
             if current_time - last_detected_time > DEBOUNCE_TIME/1000:
                 pulse_count += 1
             else:
