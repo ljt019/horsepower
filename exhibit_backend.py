@@ -11,11 +11,14 @@ CORS(app)
 GPIO_PIN = 14
 DEBOUNCE_TIME = 10  # in milliseconds, adjust as needed
 NUM_READINGS = 2  # Number of readings to take before averaging
+last_pulse_time = 0  # To counter continueous triggers (sensor stopped over magnet)
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(GPIO_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 def get_rpm():
+    global last_pulse_time  # Use the global keyword to access the variable
+
     pulse_count = 0
     start_time = time.time()
     end_time = start_time + 1  # We'll measure for one second
@@ -23,9 +26,15 @@ def get_rpm():
     while time.time() < end_time:
         if GPIO.input(GPIO_PIN) == 0:  # Detecting a falling edge (magnet passing by)
             pulse_count += 1
+            last_pulse_time = time.time()  # Update the time of the last detected pulse
             time.sleep(DEBOUNCE_TIME/1000)  # Debounce for the given time
 
     rpm = (pulse_count / 7) * 60  # Calculate RPM
+
+    # If more than 2 seconds have passed since the last pulse, set RPM to 0
+    if time.time() - last_pulse_time > 2:
+        rpm = 0
+
     return rpm
 
 @app.route("/")
