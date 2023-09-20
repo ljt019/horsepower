@@ -18,9 +18,9 @@ body, html {
     position: absolute;
     bottom: 10%; /* Adjust as needed */
     left: 50%;
-    transform: translateX(-25%), scale(0.2);
-    width: 900px;  /* This matches the frame width */
-    height: 606px; /* This matches the frame height */
+    transform: translateX(-50%);
+    width: 900px;
+    height: 606px;
     overflow: hidden; /* This will ensure only one frame is visible */
     background: url('static/images/horse_sprite.png') 0 0;
     background-size: 4500px 1212px; /* Adjusted for 2 rows and 6 frames */
