@@ -49,8 +49,8 @@ def is_engine_stopped(avg_time_between_pulses, STOPPED_THRESHOLD):
 def calculate_rpm(pulse_count):
     return (pulse_count / 7) * 60
 
-logging.info("-------------------Measured RPM-------------------")
 def get_rpm(GPIO_PIN, DEBOUNCE_TIME, MAX_STORED_TIMES=10, STOPPED_THRESHOLD=0.1):
+    logging.info("-------------------RPM FUNCTION DATA-------------------")
     global pulse_times  
     pulse_count, current_time, last_detected_time = initialize_rpm_variables()
 
@@ -62,19 +62,25 @@ def get_rpm(GPIO_PIN, DEBOUNCE_TIME, MAX_STORED_TIMES=10, STOPPED_THRESHOLD=0.1)
                 pulse_count += 1
                 pulse_times = update_pulse_times(pulse_times, current_time, MAX_STORED_TIMES)
                 
+                logging.debug(f'Pulse detected. Pulse count: {pulse_count}')
+                logging.debug(f'Pulse times: {pulse_times}')
+                
                 avg_time_between_pulses = calculate_average_pulse_interval(pulse_times)
+                logging.debug(f'Average time between pulses: {avg_time_between_pulses}')
+                
                 if is_engine_stopped(avg_time_between_pulses, STOPPED_THRESHOLD):
                     logging.info("Detected engine as stopped.")
                     return 0
                 
                 last_detected_time = current_time
+                logging.debug(f'Last detected time updated to: {last_detected_time}')
+                
                 time.sleep(DEBOUNCE_TIME / 1000)
         except Exception as e:
-            logging.info("-------------------Errors-------------------")
             logging.error(f"An error occurred: {e}")
     
     rpm = calculate_rpm(pulse_count)
-    logging.debug(f"Detected RPM: {rpm}")
+    logging.debug(f'Calculated RPM: {rpm}')
     return rpm
 
 
