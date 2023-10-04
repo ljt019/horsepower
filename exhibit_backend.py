@@ -6,7 +6,7 @@ import RPi.GPIO as GPIO
 import time
 import logging
 
-logging.basicConfig(filename='backend.log', filemode='w', level=logging.INFO, 
+logging.basicConfig(filename='backend.log', filemode='w', level=logging.DEBUG, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 app = Flask(__name__)
@@ -17,7 +17,7 @@ GPIO_PIN = 14
 DEBOUNCE_TIME = 10  # in milliseconds, adjust as needed
 RPM_SAMPLE_SIZE = 2  # Number of readings to take before averaging
 
-last_pulse_time = 0  # To counter continueous triggers (sensor stopped over magnet)
+last_pulse_time = 0  # To counter continuous triggers (sensor stopped over magnet)
 pulse_times = []  # Global list to store pulse times
 
 logging.info("-------------------CONSTANTS-------------------")
@@ -87,7 +87,7 @@ def get_horsepower():
     total_rpm = 0
 
     for _ in range(RPM_SAMPLE_SIZE):
-        total_rpm += get_rpm()
+        total_rpm += get_rpm(GPIO_PIN, DEBOUNCE_TIME)
         time.sleep(0.1)  # Sleep a bit between readings
 
     avg_rpm = total_rpm / RPM_SAMPLE_SIZE
