@@ -69,8 +69,10 @@ def get_rpm(GPIO_PIN, DEBOUNCE_TIME, MAX_STORED_TIMES=10, STOPPED_THRESHOLD=0.1)
                 logging.debug(f'Average time between pulses: {avg_time_between_pulses}')
                 
                 if is_engine_stopped(avg_time_between_pulses, STOPPED_THRESHOLD):
+                    logging.debug(f'Engine detected as stopped, avg_time_between_pulses: {avg_time_between_pulses}')
                     logging.info("Detected engine as stopped.")
                     return 0
+
                 
                 last_detected_time = current_time
                 logging.debug(f'Last detected time updated to: {last_detected_time}')
