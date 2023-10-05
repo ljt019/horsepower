@@ -3,7 +3,8 @@
 from flask import Flask, jsonify, render_template
 from flask_cors import CORS
 from flask_socketio import SocketIO
-#from RPMCalculator import get_rpm
+from RPMCalculator import get_rpm
+import RPi.GPIO as GPIO
 import time
 import logging
 
@@ -25,7 +26,7 @@ def index():
 # Function to calculate and emit horsepower
 def send_horsepower():
     torque = 14  # fixed at 16 foot-pounds
-    horsepower = (torque * 1000) / 5252
+    horsepower = (torque * get_rpm()) / 5252
     horsepower = round(horsepower, 2)
     socketio.emit('horsepower_update', {'horsepower': horsepower})
 
@@ -42,7 +43,7 @@ def handle_get_horsepower():
 # Main entry point
 if __name__ == "__main__":
     try:
-        socketio.run(app, debug=True, port=5000, host="0.0.0.0")
+        socketio.run(app, debug=True, port=5000, host="0.0.0.0", allow_unsafe_werkzeug=True)
     finally:
         GPIO.cleanup()  # Clean up GPIO on exit
         
