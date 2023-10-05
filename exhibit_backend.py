@@ -11,10 +11,14 @@ logging.basicConfig(filename='backend.log', filemode='w', level=logging.DEBUG,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 app = Flask(__name__)
+<<<<<<< HEAD
 
 # SocketIO setup
 socketio = SocketIO(app, cors_allowed_origins="*")
 
+=======
+socketio = SocketIO(app)
+>>>>>>> 5243bb5f9adf1d6fc0dbd0a9c9d41d123f4ddc03
 CORS(app)
 
 
@@ -45,3 +49,11 @@ if __name__ == "__main__":
         socketio.run(app, debug=True, port=5000, host="0.0.0.0")
     finally:
         GPIO.cleanup()  # Clean up GPIO on exit
+        
+        
+# Traceback (most recent call last):
+# File "exhibit_backend.py", line 43, in <module>
+#   socketio.run(app, debug=True, port=5000, host="0.0.0.0")
+# File "/home/pi/.local/lib/python3.7/site-packages/flask_socketio/__init__.py", line 640, in run
+#raise RuntimeError('The Werkzeug web server is not '
+#RuntimeError: The Werkzeug web server is not designed to run in production. Pass allow_unsafe_werkzeug=True to the run() method to disable this erro
