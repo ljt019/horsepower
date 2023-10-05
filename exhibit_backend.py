@@ -16,6 +16,7 @@ GPIO_PIN = 14
 DEBOUNCE_TIME = 5  # in milliseconds, adjust as needed
 
 magnet_passes = 0
+last_magnet_passes = 0
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(GPIO_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
