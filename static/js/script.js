@@ -68,19 +68,18 @@ function updateHorseSpriteInterval(horsepower) {
     horseAnimationInterval = setInterval(updateHorseSprite, newInterval);
 }
 
-// Fetch horsepower value periodically
-setInterval(() => {
-    fetch('http://localhost:5000/get_horsepower')
-        .then(response => response.json())
-        .then(data => {
-            const horsepower = data.horsepower;
-            adjustBackgroundSpeed(horsepower);
+// Set up a Socket.IO connection
+var socket = io.connect('http://' + document.domain + ':' + location.port);
 
-            // Display the horsepower value
-            const horsepowerElem = document.getElementById('horsepowerValue');
-            horsepowerElem.innerText = horsepower;
-        })
-        .catch(error => {
-            console.error("Error fetching or processing horsepower:", error);
-        });
-}, 750);
+// Define a handler for 'horsepower_update' messages
+socket.on('horsepower_update', function(msg) {
+    const horsepower = msg.horsepower;
+    adjustBackgroundSpeed(horsepower);
+
+    // Display the horsepower value
+    const horsepowerElem = document.getElementById('horsepowerValue');
+    horsepowerElem.innerText = horsepower;
+});
+
+// Optionally send a 'get_horsepower' message to the server to request an initial horsepower update
+socket.emit('get_horsepower');
