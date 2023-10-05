@@ -30,22 +30,15 @@ def calculate_and_send_rpm():
     while True:
         time.sleep(1)  # wait for 1 second
         rpm = ((magnet_passes - last_magnet_passes) / 7) * 60  # calculate RPM
+        logging.debug("RPM: " + str(rpm))
         last_magnet_passes = magnet_passes  # reset last_magnet_passes
         send_horsepower_update(rpm)  # send updated horsepower
-
 
 def send_horsepower_update(rpm):
     torque = 14  # fixed at 16 foot-pounds
     horsepower = (torque * rpm) / 5252
     horsepower = round(horsepower, 2)
     socketio.emit('horsepower_update', {'horsepower': horsepower})
-
-def calculate_rpm(number_of_magnets=7):
-    global magnet_passes
-    rpm = (magnet_passes / number_of_magnets) * 60
-    magnet_passes = 0  # Reset magnet_passes after calculating RPM
-    logging.debug("RPM: " + str(rpm))
-    return rpm
 
 GPIO.add_event_detect(GPIO_PIN, GPIO.RISING, callback=sensor_read, bouncetime=DEBOUNCE_TIME)
 
@@ -55,7 +48,7 @@ def index():
 
 @socketio.on('connect')
 def handle_connect():
-    send_horsepower_update()  # Send horsepower update when client connects
+    send_horsepower_update(0)  # Send horsepower update when client connects
 
 if __name__ == "__main__":
     try:
