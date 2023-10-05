@@ -4,6 +4,7 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO
 import RPi.GPIO as GPIO
 import logging
+import time
 
 logging.basicConfig(filename='backend.log', filemode='w', level=logging.DEBUG, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
@@ -21,12 +22,19 @@ GPIO.setup(GPIO_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 def sensor_read(channel):
     global magnet_passes
-    magnet_passes += 0.5
-    send_horsepower_update()
+    magnet_passes += 1
 
-def send_horsepower_update():
+def calculate_and_send_rpm():
+    global magnet_passes, last_magnet_passes
+    while True:
+        time.sleep(1)  # wait for 1 second
+        rpm = ((magnet_passes - last_magnet_passes) / 7) * 60  # calculate RPM
+        last_magnet_passes = magnet_passes  # reset last_magnet_passes
+        send_horsepower_update(rpm)  # send updated horsepower
+
+
+def send_horsepower_update(rpm):
     torque = 14  # fixed at 16 foot-pounds
-    rpm = calculate_rpm()
     horsepower = (torque * rpm) / 5252
     horsepower = round(horsepower, 2)
     socketio.emit('horsepower_update', {'horsepower': horsepower})
@@ -50,6 +58,7 @@ def handle_connect():
 
 if __name__ == "__main__":
     try:
+        socketio.start_background_task(calculate_and_send_rpm)  # start the background task
         socketio.run(app, debug=True, port=5000, host="0.0.0.0", allow_unsafe_werkzeug=True)
     finally:
         GPIO.cleanup()  # Clean up GPIO on exit
