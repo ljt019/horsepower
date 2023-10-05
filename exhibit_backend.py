@@ -11,14 +11,10 @@ logging.basicConfig(filename='backend.log', filemode='w', level=logging.DEBUG,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 app = Flask(__name__)
-<<<<<<< HEAD
 
 # SocketIO setup
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-=======
-socketio = SocketIO(app)
->>>>>>> 5243bb5f9adf1d6fc0dbd0a9c9d41d123f4ddc03
 CORS(app)
 
 
