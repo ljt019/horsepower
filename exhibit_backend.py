@@ -12,7 +12,7 @@ app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 GPIO_PIN = 14
-DEBOUNCE_TIME = 10  # in milliseconds, adjust as needed
+DEBOUNCE_TIME = 5  # in milliseconds, adjust as needed
 
 magnet_passes = 0
 
@@ -38,7 +38,7 @@ def calculate_rpm(number_of_magnets=7):
     logging.debug("RPM: " + str(rpm))
     return rpm
 
-GPIO.add_event_detect(GPIO_PIN, GPIO.BOTH, callback=sensor_read, bouncetime=DEBOUNCE_TIME)
+GPIO.add_event_detect(GPIO_PIN, GPIO.RISING, callback=sensor_read, bouncetime=DEBOUNCE_TIME)
 
 @app.route("/")
 def index():
