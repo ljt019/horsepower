@@ -3,28 +3,48 @@ let currentSpeed = 0;
 const maxHorsepower = 1.12;
 let animationRunning = false;
 let currentFrame = 0;
-let animationRequested = false;
-let horseAnimationInterval = null;
 const frameWidth = 900;
+let lastTimestamp;
+const baseInterval = 70;
 
 function easeOutCubic(t) {
     return (--t) * t * t + 1;
 }
 
-function animateBackground() {
-    if (!animationRunning) {
-        animationRequested = false;
-        return;
-    }
-
+function updateBackground() {
     if (currentSpeed > 0) {
         backgroundPositionX -= currentSpeed;
         const canvas = document.querySelector(".background");
         canvas.style.backgroundPosition = backgroundPositionX + "px 0";
     }
+}
 
-    if (animationRequested) {
-        requestAnimationFrame(animateBackground);
+function updateHorseSprite(timestamp) {
+    if (!lastTimestamp) {
+        lastTimestamp = timestamp;
+    }
+
+    const deltaTime = timestamp - lastTimestamp;
+    const easedHorsepower = easeOutCubic(currentSpeed / (5 * maxHorsepower));
+    const frameInterval = baseInterval / easedHorsepower;
+
+    if (deltaTime >= frameInterval) {
+        let columns = 5;
+        let yOffset = Math.floor(currentFrame / columns) * 606;
+        let xOffset = (currentFrame % columns) * frameWidth;
+
+        document.getElementById('horseAnimation').style.backgroundPosition = `-${xOffset}px -${yOffset}px`;
+        currentFrame = (currentFrame + 1) % 6;
+
+        lastTimestamp = timestamp;
+    }
+}
+
+function update(timestamp) {
+    if (animationRunning) {
+        updateBackground();
+        updateHorseSprite(timestamp);
+        requestAnimationFrame(update);
     }
 }
 
@@ -34,9 +54,7 @@ function adjustBackgroundSpeed(horsepower) {
     
     if (horsepower > 0 && !animationRunning) {
         animationRunning = true;
-        animationRequested = true;
-        animateBackground();
-        updateHorseSpriteInterval(horsepower);
+        requestAnimationFrame(update);  // Request the next animation frame
     } else if (horsepower <= 0) {
         currentSpeed = 0;
         animationRunning = false;
@@ -44,28 +62,6 @@ function adjustBackgroundSpeed(horsepower) {
         const canvas = document.querySelector(".background");
         canvas.style.backgroundPosition = "0 0";
     }
-}
-
-function updateHorseSprite() {
-    let columns = 5;
-    let yOffset = Math.floor(currentFrame / columns) * 606;
-    let xOffset = (currentFrame % columns) * frameWidth;
-
-    document.getElementById('horseAnimation').style.backgroundPosition = `-${xOffset}px -${yOffset}px`;
-    currentFrame = (currentFrame + 1) % 6;
-}
-
-function updateHorseSpriteInterval(horsepower) {
-    // Clear existing interval
-    if (horseAnimationInterval) {
-        clearInterval(horseAnimationInterval);
-    }
-
-    const baseInterval = 1000;
-    const easedHorsepower = easeOutCubic(horsepower / maxHorsepower);
-    const newInterval = baseInterval / easedHorsepower;
-
-    horseAnimationInterval = setInterval(updateHorseSprite, newInterval);
 }
 
 // Set up a Socket.IO connection
@@ -83,3 +79,6 @@ socket.on('horsepower_update', function(msg) {
 
 // Optionally send a 'get_horsepower' message to the server to request an initial horsepower update
 socket.emit('get_horsepower');
+
+// Initialize the animation loop
+requestAnimationFrame(update);

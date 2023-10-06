@@ -37,7 +37,7 @@ def calculate_and_send_rpm():
 def send_horsepower_update(rpm):
     torque = 14  # fixed at 16 foot-pounds
     horsepower = (torque * rpm) / 5252
-    horsepower = round(horsepower, 2)
+    horsepower = round(horsepower, 2) 
     socketio.emit('horsepower_update', {'horsepower': horsepower})
 
 GPIO.add_event_detect(GPIO_PIN, GPIO.RISING, callback=sensor_read, bouncetime=DEBOUNCE_TIME)
