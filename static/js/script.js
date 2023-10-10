@@ -40,11 +40,14 @@ function updateHorseSprite(timestamp) {
     }
 }
 
+var audio = new Audio('static/audio/horsegallop.wav');
+
 function update(timestamp) {
     if (animationRunning) {
         updateBackground();
         updateHorseSprite(timestamp);
         requestAnimationFrame(update);
+        audio.play();
     }
 }
 
@@ -58,6 +61,7 @@ function adjustBackgroundSpeed(horsepower) {
     } else if (horsepower <= 0) {
         currentSpeed = 0;
         animationRunning = false;
+        audio.pause();
         backgroundPositionX = 0;
         const canvas = document.querySelector(".background");
         canvas.style.backgroundPosition = "0 0";
