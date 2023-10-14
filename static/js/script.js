@@ -69,7 +69,7 @@ function adjustBackgroundSpeed(horsepower) {
 }
 
 // Set up a Socket.IO connection
-var socket = io.connect('http://' + document.domain + ':' + location.port);
+var socket = io.connect('http://192.168.1.xxx:5000');  // Replace with the IP address and port of the Intel Stick
 
 // Define a handler for 'horsepower_update' messages
 socket.on('horsepower_update', function(msg) {
