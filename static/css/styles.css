@@ -16,9 +16,22 @@ body, html {
     background-repeat: repeat-x;
 }
 
+#horseIdle {
+    position: absolute;
+    bottom: 7%;
+    /* Adjust as needed */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 606px;
+    overflow: hidden;
+    background-size: 4500px 1220px;
+    /* This will ensure only one frame is visible */
+}
+
 #horseAnimation {
     position: absolute;
-    bottom: 10%; /* Adjust as needed */
+    bottom: 7%; /* Adjust as needed */
     left: 50%;
     transform: translateX(-50%);
     width: 900px;
@@ -38,4 +51,32 @@ body, html {
     padding: 10px;
     border-radius: 5px;
     z-index: 10;
+}
+
+.idleText {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr, 1fr, 1fr;
+    grid-gap: 10px;
+    position: absolute;
+    /* center the grid */
+    top: 2%;
+    left: 40%;
+    justify-items: center;
+    align-items: center;
+    font-size: 32px;
+}
+
+#spinner {
+    animation: rotate 2s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }

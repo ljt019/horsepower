@@ -6,6 +6,8 @@ let currentFrame = 0;
 const frameWidth = 900;
 let lastTimestamp;
 const baseInterval = 70;
+var idleTimer;
+var isIdleScreenDisplayed = false;
 
 function easeOutCubic(t) {
     return (--t) * t * t + 1;
@@ -51,6 +53,17 @@ function update(timestamp) {
     }
 }
 
+function resetIdleTimer() {
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(function() {
+        // Switch to idle screen if no updates for 15 seconds
+        if (currentSpeed === 0) {
+            window.location.href = '/idle.html';
+            isIdleScreenDisplayed = true;
+        }
+    }, 15000); // 15 seconds
+}
+
 function adjustBackgroundSpeed(horsepower) {
     const speedFactor = 5;
     currentSpeed = speedFactor * (horsepower / maxHorsepower);
@@ -68,21 +81,35 @@ function adjustBackgroundSpeed(horsepower) {
     }
 }
 
-// Set up a Socket.IO connection
-var socket = io.connect('http://192.168.1.xxx:5000');  // Replace with the IP address and port of the Intel Stick
+// Set up a WebSocket connection to the Raspberry Pi
+var socket = new WebSocket('ws://192.168.1.198:5000/ws');
 
-// Define a handler for 'horsepower_update' messages
-socket.on('horsepower_update', function(msg) {
+socket.onopen = function(event) {
+    resetIdleTimer();
+    console.log('Connected to Raspberry Pi WebSocket server.');
+};
+
+socket.onmessage = function(event) {
+    const msg = JSON.parse(event.data);
     const horsepower = msg.horsepower;
     adjustBackgroundSpeed(horsepower);
 
     // Display the horsepower value
     const horsepowerElem = document.getElementById('horsepowerValue');
     horsepowerElem.innerText = horsepower;
-});
 
-// Optionally send a 'get_horsepower' message to the server to request an initial horsepower update
-socket.emit('get_horsepower');
+    resetIdleTimer(); // Reset the idle timer on every message
+};
+
+socket.onerror = function(error) {
+    console.log('WebSocket error:', error);
+};
+
+socket.onclose = function(event) {
+    console.log('WebSocket connection closed.');
+    clearTimeout(idleTimer); // Clear the timer when the connection is closed
+};
 
 // Initialize the animation loop
 requestAnimationFrame(update);
+
