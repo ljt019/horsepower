@@ -31,7 +31,7 @@ The Horsepower Exhibit is an interactive project designed to teach and visualize
     - JavaScript: `script.js` for dynamic functionalities, processing the animations and animation speed from the sensor data
 3. **Raspberry Pi & Sensor Setup:**
     
-    - `raspPiDataCollectionWebSocket.go`: Raspberry Pi script for collecting sensor data and calculating horsepower.
+    - `./piWebsocket/main.go`: Raspberry Pi script for collecting sensor data and calculating horsepower.
     - Raspberry Pi connected to a sensor for input data.
 
 ### Architecture
@@ -101,4 +101,4 @@ The Horsepower Exhibit is an interactive project designed to teach and visualize
 - **Animation Not Working:** Check if the JavaScript file is correctly linked in the HTML files and no errors are present in the console.
 
 ## Author
-**Lucien Thomas** | [GitHub](https://github.com/LucienJamesT) | 📧 lucienjamest22@gmail.com | Feel free to contact me with any questions
+**Lucien Thomas** | [GitHub](https://github.com/ljt019) | 📧 lucienjamest22@gmail.com | Feel free to contact me with any questions
