@@ -1,50 +1,104 @@
-# Horsepower Exhibit with Raspberry Pi
+# Horsepower Exhibit Documentation
 
-A web-based visualization of engine RPM and calculated horsepower using a Raspberry Pi and a Hall effect sensor.
+This documentation provides a comprehensive overview of the Horsepower Exhibit project, a web-based interactive application that visualizes horsepower using physical interaction through a Raspberry Pi, a hall effect sensor, and web technologies.
 
-## Overview
+## Table of Contents
 
-This project uses a Raspberry Pi to read RPM values from an engine via a Hall effect sensor. The RPM values are then used to calculate and display the engine's horsepower on a web-based interface. The interface also features a visually appealing representation with a horse animation that dynamically changes based on the RPM/horsepower.
+- [Introduction](#introduction)
+- [System Overview](#system-overview)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Code Overview](#code-overview)
+- [Troubleshooting](#troubleshooting)
+- [Author](#author)
 
-## Features
 
-- **Real-time RPM Readings**: Utilizes the GPIO pins on a Raspberry Pi to get real-time RPM readings from an engine.
-- **Horsepower Calculation**: Based on the RPM and a constant torque value, the horsepower of the engine is calculated and displayed.
-- **Dynamic Horse Animation**: The web interface displays a horse animation that changes its speed based on the current RPM/horsepower.
+## Introduction
 
-## Prerequisites
+The Horsepower Exhibit is an interactive project designed to teach and visualize the concept of horsepower. Users interact with a physical device connected to a Raspberry Pi, which in turn communicates the calculated horsepower to a web application. The web app visually represents this horsepower through a dynamic horse animation and moving background.
 
-- **Hardware**:
-  - Raspberry Pi (with Raspbian OS installed).
-  - Hall effect sensor.
-  - Engine with 7 magnets for the sensor.
-- **Software**:
-  - Flask web framework.
-  - Python GPIO library for Raspberry Pi.
+## System Overview
 
-## Setup
+### Components
 
-1. Connect the Hall effect sensor to the Raspberry Pi's GPIO pin 14.
-2. Ensure all software dependencies are installed:
+1. **Host Computer Server (Go):**
+    
+    - `./main.go`: Hosts the files in the static directory.
+2. **Web Frontend (HTML, CSS, JS):**
+    
+    - HTML: `index.html` (main page), `idle.html` (idle screen).
+    - CSS: `styles.css` for styling.
+    - JavaScript: `script.js` for dynamic functionalities, processing the animations and animation speed from the sensor data
+3. **Raspberry Pi & Sensor Setup:**
+    
+    - `raspPiDataCollectionWebSocket.go`: Raspberry Pi script for collecting sensor data and calculating horsepower.
+    - Raspberry Pi connected to a sensor for input data.
 
-   `pip install flask RPi.GPIO flask_cors`
+### Architecture
 
-## Getting Started
+- **Backend:** Written in Go, running on a Host Computer and Raspberry Pi.
+- **Frontend:** HTML/CSS/JavaScript, served by the Go server, running in a web browser.
+- **Communication:** WebSocket for real-time data exchange between the Raspberry Pi and the web frontend.
 
-1. **Clone the repository and navigate to the directory**:
-    `git clone https://github.com/Sci-Port/Horsepower.git`
-   `cd Horsepower`
+## Installation
 
-3. **Run the Flask app**:
-    `
-    python app.py
-    `
+### Prerequisites
 
+- Raspberry Pi with GPIO access.
+- Necessary sensors and hardware connected to the Raspberry Pi.
+
+### Setup Steps
+
+1. **Server Setup:**
+    
+    - Clone the repository to your server.
+    - Run the `./main.exe`
+1. **Raspberry Pi Setup:**
+    
+    - Set up the Raspberry Pi with the appropriate sensors.
+    - Clone the repository to your server.
+    - Run the `./piWebsocket/main.exe`
 ## Usage
 
-1. Start the engine.
-2. Navigate to `http://[Raspberry Pi IP Address]:5000` on a web browser.
-3. Observe the real-time horsepower value and horse animation on the web interface.
+1. **Accessing the Web Application:**
+    
+    - Open a web browser and navigate to the server's IP address with port `8080` (e.g., `http://<server-ip>:8080`).  *Note: `http://localhost:8080`*
+2. **Interacting with the Exhibit:**
+    
+    - Turn the crank or interact with the sensor connected to the Raspberry Pi.
+    - Watch the web application's visual response in real-time.
+
+## Code Overview
+
+### `./main.go`
+
+- Serves static files and templates.
+- Defines the root path handler.
+
+### `./piWebsocket/main.go`
+
+- Reads sensor data from Raspberry Pi GPIO.
+- Calculates RPM and horsepower.
+- Sends data over WebSocket.
+
+### HTML Files (`index.html`, `idle.html`)
+
+- Define the structure of the web pages.
+
+### `styles.css`
+
+- Styles for the web pages and animations.
+
+### `script.js`
+
+- Handles WebSocket communications.
+- Animates the horse sprite and background.
+- Manages idle screen transitions.
+
+## Troubleshooting
+
+- **WebSocket Connection Issues:** Ensure the server and Raspberry Pi are on the same network and the WebSocket URL is correct.
+- **Animation Not Working:** Check if the JavaScript file is correctly linked in the HTML files and no errors are present in the console.
 
 ## Author
 **Lucien Thomas** | [GitHub](https://github.com/LucienJamesT) | 📧 lucienjamest22@gmail.com | Feel free to contact me with any questions
