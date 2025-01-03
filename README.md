@@ -1,6 +1,6 @@
-# Horsepower Exhibit Documentation
+# Horsepower Exhibit
 
-This documentation provides a comprehensive overview of the Horsepower Exhibit project, a web-based interactive application that visualizes horsepower using physical interaction through a Raspberry Pi, a hall effect sensor, and web technologies.
+This documentation provides an overview of the Horsepower Exhibit project, implemented in Rust using the Macroquad game framework. The application visualizes horsepower through a dynamic horse animation and scrolling background, receiving data via UDP from an external source.
 
 ## Table of Contents
 
@@ -8,97 +8,98 @@ This documentation provides a comprehensive overview of the Horsepower Exhibit p
 - [System Overview](#system-overview)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Code Overview](#code-overview)
+- [Code Structure](#code-structure)
+- [Configuration](#configuration)
 - [Troubleshooting](#troubleshooting)
 - [Author](#author)
 
-
 ## Introduction
 
-The Horsepower Exhibit is an interactive project designed to teach and visualize the concept of horsepower. Users interact with a physical device connected to a Raspberry Pi, which in turn communicates the calculated horsepower to a web application. The web app visually represents this horsepower through a dynamic horse animation and moving background.
+The Horsepower Exhibit is an interactive visualization of horsepower using a Rust-based application. It receives real-time horsepower data via UDP and animates a horse sprite and scrolling background based on the input values. The application is built using the Macroquad game framework for graphics and Rodio for audio.
 
 ## System Overview
 
 ### Components
 
-1. **Host Computer Server (Go):**
-    
-    - `./main.go`: Hosts the files in the static directory.
-2. **Web Frontend (HTML, CSS, JS):**
-    
-    - HTML: `index.html` (main page), `idle.html` (idle screen).
-    - CSS: `styles.css` for styling.
-    - JavaScript: `script.js` for dynamic functionalities, processing the animations and animation speed from the sensor data
-3. **Raspberry Pi & Sensor Setup:**
-    
-    - `./piWebsocket/main.go`: Raspberry Pi script for collecting sensor data and calculating horsepower.
-    - Raspberry Pi connected to a sensor for input data.
+1. **Rust Application:**
+   - Receives UDP packets containing horsepower, RPM, and torque data
+   - Animates horse sprite and background based on input
+   - Plays galloping sound effect synchronized with animation
+
+2. **External Data Source:**
+   - Sends UDP packets to the application on port 3450
+   - Expected packet format: 3 f32 values (horsepower, RPM, torque)
 
 ### Architecture
 
-- **Backend:** Written in Go, running on a Host Computer and Raspberry Pi.
-- **Frontend:** HTML/CSS/JavaScript, served by the Go server, running in a web browser.
-- **Communication:** WebSocket for real-time data exchange between the Raspberry Pi and the web frontend.
+- **Graphics:** Macroquad framework for 2D rendering
+- **Audio:** Rodio for sound effects
+- **Data Processing:** UDP socket for real-time data reception
+- **Animation:** Frame-based sprite animation with smooth interpolation
 
 ## Installation
 
 ### Prerequisites
 
-- Raspberry Pi with GPIO access.
-- Necessary sensors and hardware connected to the Raspberry Pi.
+- Rust 1.65+ installed
+- Cargo package manager
 
 ### Setup Steps
 
-1. **Server Setup:**
-    
-    - Clone the repository to your server.
-    - Run the `./main.exe`
-1. **Raspberry Pi Setup:**
-    
-    - Set up the Raspberry Pi with the appropriate sensors.
-    - Clone the repository to your server.
-    - Run the `./piWebsocket/main.exe`
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   cargo build
+   ```
+3. Place assets in the `assets/` directory:
+   - Background: `background/HorseRace.png`
+   - Horse frames: `horse/frame_0.png` to `horse/frame_5.png`
+   - Audio: `audio/horsegallop.wav`
+
+4. Run the application:
+   ```bash
+   cargo run
+   ```
+
 ## Usage
 
-1. **Accessing the Web Application:**
-    
-    - Open a web browser and navigate to the server's IP address with port `8080` (e.g., `http://<server-ip>:8080`).  *Note: `http://localhost:8080`*
-2. **Interacting with the Exhibit:**
-    
-    - Turn the crank or interact with the sensor connected to the Raspberry Pi.
-    - Watch the web application's visual response in real-time.
+1. Start the application
+2. Ensure the data source is sending UDP packets to port 3450
+3. The application will:
+   - Display a fullscreen window with the visualization
+   - Animate the horse and background based on received horsepower values
+   - Show current horsepower value on screen
+   - Play galloping sound effect when horsepower > 0
 
-## Code Overview
+## Code Structure
 
-### `./main.go`
+### Main Components
 
-- Serves static files and templates.
-- Defines the root path handler.
+- `main.rs`: Entry point, handles UDP communication and main loop
+- `background.rs`: Manages scrolling background animation
+- `horse.rs`: Handles horse sprite animation
+- `data_smoother.rs`: Implements data smoothing for stable visualization
 
-### `./piWebsocket/main.go`
+### Key Features
 
-- Reads sensor data from Raspberry Pi GPIO.
-- Calculates RPM and horsepower.
-- Sends data over WebSocket.
+- Smooth interpolation of horsepower values
+- Configurable animation speeds
+- Automatic scaling for different screen resolutions
+- Data smoothing for stable visualization
 
-### HTML Files (`index.html`, `idle.html`)
+## Configuration
 
-- Define the structure of the web pages.
+The application can be configured through constants in `main.rs`:
 
-### `styles.css`
-
-- Styles for the web pages and animations.
-
-### `script.js`
-
-- Handles WebSocket communications.
-- Animates the horse sprite and background.
-- Manages idle screen transitions.
+- `BACKGROUND_SPEED_FACTOR`: Controls background scroll speed
+- `HORSE_SPEED_FACTOR`: Controls horse animation speed
+- `INTERPOLATION_DURATION`: Time for horsepower value interpolation
 
 ## Troubleshooting
 
-- **WebSocket Connection Issues:** Ensure the server and Raspberry Pi are on the same network and the WebSocket URL is correct.
-- **Animation Not Working:** Check if the JavaScript file is correctly linked in the HTML files and no errors are present in the console.
+- **No Animation:** Verify UDP packets are being sent to the correct port
+- **No Sound:** Check OpenAL installation and audio file path
+- **Performance Issues:** Reduce window size or optimize assets
 
 ## Author
 **Lucien Thomas** | [GitHub](https://github.com/ljt019) | 📧 lucienjamest22@gmail.com | Feel free to contact me with any questions
